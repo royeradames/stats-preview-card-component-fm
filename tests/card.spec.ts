@@ -45,6 +45,8 @@ test("follows the mobile, tablet and desktop frames", async ({ page }) => {
   const tabletImage = await image.boundingBox();
   const tabletCopy = await copy.boundingBox();
   expect(tabletImage!.y + tabletImage!.height).toBeCloseTo(tabletCopy!.y, 0);
+  // Figma Tablet "Image Container" is 564×442; the photo must not drive the panel height.
+  expect(tabletImage!.height).toBeCloseTo(442, 0);
   await expect(page.locator("h1")).toHaveCSS("text-align", "left");
   await expect(page.locator("h1")).toHaveCSS("font-size", "36px");
   await expect(page.locator(".stats")).toHaveCSS("flex-direction", "row");
@@ -53,10 +55,17 @@ test("follows the mobile, tablet and desktop frames", async ({ page }) => {
   const desktopCard = await card.boundingBox();
   const desktopImage = await image.boundingBox();
   const desktopCopy = await copy.boundingBox();
-  expect(desktopCard!.width).toBeCloseTo(1110, 0);
+  // Figma Desktop "Container" is 1128×442 (two 564 halves).
+  expect(desktopCard!.width).toBeCloseTo(1128, 0);
   expect(desktopImage!.x).toBeGreaterThan(desktopCopy!.x);
   expect(desktopImage!.height).toBeCloseTo(desktopCopy!.height, 0);
-  expect(desktopCopy!.height).toBeGreaterThanOrEqual(440);
+  const copyContentHeight = await copy.evaluate(element => {
+    const style = getComputedStyle(element);
+    return [...element.children].reduce((sum, child) => sum + child.getBoundingClientRect().height, 0)
+      + parseFloat(style.rowGap) * (element.children.length - 1) + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  });
+  expect(desktopCard!.height).toBeCloseTo(copyContentHeight, 0);
+  expect(Math.abs(desktopCard!.height - 442)).toBeLessThanOrEqual(4);
 });
 
 test("fits from 320 to 1440 with no overflow and only the design's stat captions under 16px", async ({ page }) => {
