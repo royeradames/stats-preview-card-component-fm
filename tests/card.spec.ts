@@ -87,3 +87,14 @@ test("footer links are reachable by keyboard with a visible focus ring", async (
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Royer Adames", exact: true })).toBeFocused();
 });
+
+test("declares one site name in the footer, og:site_name and WebSite JSON-LD", async ({ page }) => {
+  await page.goto("/");
+  const visible = await page.locator("footer .site-name").textContent();
+  expect(visible).toBe("Stats preview card");
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", visible!);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /three headline stats/);
+  const jsonLd = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
+  expect(jsonLd).toEqual({ "@context": "https://schema.org", "@type": "WebSite", name: visible, url: "https://stats-preview-card-component-fm.royeradames.com/" });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+});

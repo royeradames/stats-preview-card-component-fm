@@ -56,3 +56,4 @@ footer a:hover { color: var(--accent); }
   .stats-image { aspect-ratio: auto; }
   .stats-copy { justify-content: center; }
 }
+.site-name { color: var(--ink); }

@@ -30,7 +30,7 @@ export default function Home() {
           </div>
         </article>
       </main>
-      <footer>Challenge by <a href="https://www.frontendmentor.io/challenges/stats-preview-card-component-8JqbgoU62">Frontend Mentor</a>. Built by <a href="https://royeradames.com">Royer Adames</a>.</footer>
+      <footer><span className="site-name">Stats preview card</span>. Challenge by <a href="https://www.frontendmentor.io/challenges/stats-preview-card-component-8JqbgoU62">Frontend Mentor</a>. Built by <a href="https://royeradames.com">Royer Adames</a>.</footer>
     </>
   );
 }
