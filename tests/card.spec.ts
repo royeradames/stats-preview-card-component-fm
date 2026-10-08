@@ -68,13 +68,14 @@ test("follows the mobile, tablet and desktop frames", async ({ page }) => {
   expect(Math.abs(desktopCard!.height - 442)).toBeLessThanOrEqual(4);
 });
 
-test("fits from 320 to 1440 with no overflow and only the design's stat captions under 16px", async ({ page }) => {
-  for (const width of [320, 375, 400, 640, 768, 1024, 1120, 1440]) {
+/* QA sweep October 8 (INP1, LG1): the 12px stat captions were the only text under the family 16px floor. */
+test("fits from 320 to 1440 with no overflow and no text under 16px, stat captions included", async ({ page }) => {
+  for (const width of [320, 375, 400, 640, 768, 1024, 1120, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const smallText = await page.locator("h1, p, dt, dd, footer, footer a").evaluateAll(elements =>
-      elements.filter(element => element.getClientRects().length > 0 && parseFloat(getComputedStyle(element).fontSize) < 16 && element.tagName !== "DT").map(element => element.textContent));
+      elements.filter(element => element.getClientRects().length > 0 && parseFloat(getComputedStyle(element).fontSize) < 16).map(element => element.textContent));
     expect(smallText).toEqual([]);
     for (const link of await page.locator("a").all()) {
       const box = await link.boundingBox();
