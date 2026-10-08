@@ -31,8 +31,8 @@ h1 { margin: 0; font-size: 1.75rem; font-weight: 700; line-height: 2rem; }
 .stats { display: flex; flex-direction: column; gap: 2rem; margin: 0; }
 .stats div { display: flex; flex-direction: column-reverse; }
 .stats dd { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.75rem; }
-/* The design's deliberate 12px tracked uppercase stat captions. */
-.stats dt { color: var(--label); font-family: var(--font-lexend-deca), sans-serif; font-size: .75rem; letter-spacing: .0625rem; line-height: 1.5625rem; text-transform: uppercase; }
+/* The design's tracked uppercase stat captions, raised from 12px to the family 16px floor. */
+.stats dt { color: var(--label); font-family: var(--font-lexend-deca), sans-serif; font-size: 1rem; letter-spacing: .0625rem; line-height: 1.5625rem; text-transform: uppercase; }
 
 footer { padding: 0 1.5rem 1.5rem; color: var(--body); font-size: 1rem; line-height: 1.5; text-align: center; }
 footer a { display: inline-block; min-height: 2.75rem; padding-block: .625rem; color: var(--ink); }
@@ -46,7 +46,9 @@ footer a:hover { color: var(--accent); }
   h1 { font-size: 2.25rem; line-height: 2.75rem; }
   .text-content { gap: 1.5rem; }
   .description { max-width: 23.375rem; }
-  .stats { flex-direction: row; gap: 4rem; }
+  /* With 16px captions the design's 4rem gaps no longer fit the column, so the three stats spread across it with at least 1.5rem between
+     them, and wrap rather than spill if the text is enlarged. */
+  .stats { flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; }
 }
 
 /* Desktop frame: 1128px (two 564px halves) side-by-side card, image on the right; the copy sets the height. */

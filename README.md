@@ -16,7 +16,7 @@ Original challenge files are preserved under `reference/`; supplied images moved
 
 ## Implementation choices
 
-- Body copy rises from the design's 15px to the family 16px floor. The 12px tracked uppercase stat captions are a deliberate design detail and stay at 12px.
+- Body copy rises from the design's 15px to the family 16px floor. The tracked uppercase stat captions rise from 12px to 16px as well (width sweep, October 8, 2026): the floor now has no exceptions on this page.
 - Where the supplied desktop JPG (1110px card) and the decoded Figma Desktop frame (1128px: two 564px halves, 442px tall) differ, the Figma frame wins. The photo is positioned out of flow so the frame, not the photo's intrinsic ratio, sets the panel height.
-- The tablet stacked layout runs from 640px up; the side-by-side desktop card starts at 1120px, where the 50% text column still fits the 355px stats row.
+- The tablet stacked layout runs from 640px up; the side-by-side desktop card starts at 1120px. With the 16px captions the three stats no longer fit the design's 4rem gaps, so they spread across the copy column (`space-between`, at least 1.5rem apart) and wrap rather than spill if text is enlarged.
 - Stats are a `<dl>` with the caption as `<dt>`; CSS reverses the visual order so the number sits above its caption as in the design.
