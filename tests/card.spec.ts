@@ -108,3 +108,26 @@ test("declares one site name in the footer, og:site_name and WebSite JSON-LD", a
   expect(jsonLd).toEqual({ "@context": "https://schema.org", "@type": "WebSite", name: visible, url: "https://stats-preview-card-component-fm.royeradames.com/" });
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
 });
+
+/* Review October 8: with 16px captions the 4rem-gapped stats row was wider than the copy column at 640 and 1120 px,
+   and the card's overflow: hidden would have hidden the spill. Every stat must sit inside the copy column, in one row from 640. */
+test("the three stats stay inside the copy column, in one row on tablet and desktop", async ({ page }) => {
+  for (const width of [320, 375, 640, 700, 768, 1024, 1119, 1120, 1200, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const layout = await page.evaluate(() => {
+      const copy = document.querySelector(".stats-copy")!;
+      const style = getComputedStyle(copy);
+      const box = copy.getBoundingClientRect();
+      const left = box.left + parseFloat(style.paddingLeft);
+      const right = box.right - parseFloat(style.paddingRight);
+      const items = [...document.querySelectorAll(".stats > div")].map(item => item.getBoundingClientRect());
+      return {
+        inside: items.every(item => item.left >= left - 0.5 && item.right <= right + 0.5),
+        rows: new Set(items.map(item => Math.round(item.top))).size,
+      };
+    });
+    expect(layout.inside, `stats spill out of the copy column at ${width}`).toBe(true);
+    if (width >= 640) expect(layout.rows, `stats rows at ${width}`).toBe(1);
+  }
+});
